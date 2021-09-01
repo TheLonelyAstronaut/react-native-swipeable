@@ -1,5 +1,5 @@
-import React, { PropsWithChildren, useState } from 'react';
-import { LayoutRectangle, StyleSheet, View, ViewStyle } from 'react-native';
+import React, { useState } from 'react';
+import type { LayoutRectangle } from 'react-native';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 import Animated, {
 	useSharedValue,
@@ -8,19 +8,8 @@ import Animated, {
 	useAnimatedGestureHandler,
 	runOnJS,
 } from 'react-native-reanimated';
-
-export type ReanimatedContext = { startX: number };
-
-export type SwipeableProps = PropsWithChildren<{
-	leftTreshold?: number;
-	rightTreshold?: number;
-	leftBackgroundStyle?: ViewStyle;
-	rightBackgroundStyle?: ViewStyle;
-	leftContent?: () => React.ReactNode;
-	rightContent?: () => React.ReactNode;
-	onRightActionMaximize?: () => void;
-	onLeftActionMaximize?: () => void;
-}>;
+import type { ReanimatedContext, SwipeableProps } from './types';
+import { CommonSwipeable } from './common.component';
 
 export const Swipeable: React.FC<SwipeableProps> = (props: SwipeableProps) => {
 	const [isRightSwipe, setIsRightSwipe] = useState<boolean | null>(null);
@@ -67,12 +56,12 @@ export const Swipeable: React.FC<SwipeableProps> = (props: SwipeableProps) => {
 				const eventX = Math.abs(x.value);
 				const { width } = wrapperSize;
 
-				const treshold = isRightSwipe
-					? props.rightTreshold ?? width / 2
-					: props.leftTreshold ?? width / 2;
+				const threshold = isRightSwipe
+					? props.rightThreshold ?? width / 2
+					: props.leftThreshold ?? width / 2;
 
 				const shouldAutomaticallyTrigger =
-					treshold - eventX < 0 &&
+					threshold - eventX < 0 &&
 					((isRightSwipe && props.onRightActionMaximize) ||
 						(!isRightSwipe && props.onLeftActionMaximize));
 
@@ -119,73 +108,17 @@ export const Swipeable: React.FC<SwipeableProps> = (props: SwipeableProps) => {
 	return (
 		<PanGestureHandler onGestureEvent={gestureHandler}>
 			<Animated.View>
-				{isRightSwipe
-					? props.rightContent && (
-							<View
-								style={[
-									styles.rightContent,
-									{
-										width: wrapperSize?.width,
-										height: wrapperSize?.height,
-										...props.rightBackgroundStyle,
-									},
-								]}
-							>
-								<View
-									onLayout={(event) =>
-										setRightActionsSize(
-											event.nativeEvent.layout
-										)
-									}
-								>
-									{props.rightContent()}
-								</View>
-							</View>
-					  )
-					: props.leftContent && (
-							<View
-								style={[
-									styles.leftContent,
-									{
-										width: wrapperSize?.width,
-										height: wrapperSize?.height,
-										...props.leftBackgroundStyle,
-									},
-								]}
-							>
-								<View
-									onLayout={(event) =>
-										setLeftActionsSize(
-											event.nativeEvent.layout
-										)
-									}
-								>
-									{props.leftContent()}
-								</View>
-							</View>
-					  )}
-				<Animated.View
-					style={animatedStyle}
-					onLayout={(event) =>
-						setWrapperSize(event.nativeEvent.layout)
-					}
-				>
-					{props.children}
-				</Animated.View>
+				<CommonSwipeable
+					{...props}
+					isRightSwipe={isRightSwipe}
+					wrapperSize={wrapperSize}
+					setRightActionsSize={setRightActionsSize}
+					setLeftActionsSize={setLeftActionsSize}
+					animatedStyle={animatedStyle}
+					setWrapperSize={setWrapperSize}
+					AnimatedView={Animated.View}
+				/>
 			</Animated.View>
 		</PanGestureHandler>
 	);
 };
-
-const styles = StyleSheet.create({
-	rightContent: {
-		position: 'absolute',
-		alignItems: 'center',
-		flexDirection: 'row-reverse',
-	},
-	leftContent: {
-		position: 'absolute',
-		alignItems: 'center',
-		flexDirection: 'row',
-	},
-});
