@@ -3,8 +3,6 @@ import type { SwipeableProps } from './types';
 import { LayoutRectangle, Animated, View, PanResponder } from 'react-native';
 import { CommonSwipeable } from './common.component';
 
-const truthy = () => true;
-
 export const PureSwipeable: React.FC<SwipeableProps> = (
 	props: SwipeableProps
 ) => {
@@ -19,14 +17,12 @@ export const PureSwipeable: React.FC<SwipeableProps> = (
 
 	const panResponder = useRef(
 		PanResponder.create({
-			onStartShouldSetPanResponder: truthy,
-			onStartShouldSetPanResponderCapture: truthy,
-			onMoveShouldSetPanResponder: truthy,
-			onMoveShouldSetPanResponderCapture: truthy,
-			onPanResponderStart: () => {
-				props.onSwipeStart && props.onSwipeStart();
-			},
 			onPanResponderMove: (event, gestureState) => {
+				if (gestureState.dx === 0) {
+					props.onSwipeEnd && props.onSwipeEnd();
+					return;
+				}
+
 				isRightSwipeValue.current =
 					startPosition.current === null
 						? gestureState.dx < 0
@@ -48,8 +44,6 @@ export const PureSwipeable: React.FC<SwipeableProps> = (
 
 				animatedValue.setValue(value);
 
-				//console.log(value, isRightSwipeValue.current);
-
 				if (
 					(value < 0 && !isRightSwipeValue.current) ||
 					(value > 0 && isRightSwipeValue.current)
@@ -68,6 +62,8 @@ export const PureSwipeable: React.FC<SwipeableProps> = (
 
 					return;
 				}
+
+				props.onSwipeEnd && props.onSwipeEnd();
 
 				const eventX = Math.abs(value);
 				const { width } = wrapperSize.current!;
@@ -102,9 +98,11 @@ export const PureSwipeable: React.FC<SwipeableProps> = (
 							  props.onLeftActionMaximize();
 					});
 				} else {
-					const { width: actionsWidth } = isRightSwipeValue.current
-						? rightActionsSize.current!
-						: leftActionsSize.current!;
+					let actionsWidth = isRightSwipeValue.current
+						? rightActionsSize?.current?.width
+						: leftActionsSize?.current?.width;
+
+					actionsWidth = actionsWidth ?? 0;
 
 					const position =
 						eventX > actionsWidth
@@ -131,7 +129,13 @@ export const PureSwipeable: React.FC<SwipeableProps> = (
 	).current;
 
 	return (
-		<View {...panResponder.panHandlers}>
+		<View
+			{...panResponder.panHandlers}
+			onMoveShouldSetResponderCapture={(_) => {
+				props.onSwipeStart && props.onSwipeStart();
+				return true;
+			}}
+		>
 			<CommonSwipeable
 				{...props}
 				isRightSwipe={isRightSwipe}
