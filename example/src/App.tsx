@@ -20,7 +20,7 @@ const RightContent = () => (
 );
 
 export default function App() {
-	const [scrollEnabled, setScrollEnabled] = useState(true);
+	const [scrollEnabled] = useState(true);
 
 	const renderItem = useCallback(
 		() => (
@@ -31,8 +31,9 @@ export default function App() {
 				leftContent={() => <RightContent />}
 				onRightActionMaximize={() => console.log('Right maximize')}
 				onLeftActionMaximize={() => console.log('Left maximize')}
-				onSwipeStart={() => setScrollEnabled(false)}
-				onSwipeEnd={() => setScrollEnabled(true)}
+				//onSwipeStart={() => setScrollEnabled(false)}
+				//onSwipeEnd={() => setScrollEnabled(true)}
+				//isListScrollable={scrollEnabled}
 			>
 				<View style={styles.box}>
 					<View style={styles.spacer} />

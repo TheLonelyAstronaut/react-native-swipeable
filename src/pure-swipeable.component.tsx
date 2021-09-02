@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { SwipeableProps } from './types';
 import { LayoutRectangle, Animated, View, PanResponder } from 'react-native';
 import { CommonSwipeable } from './common.component';
@@ -13,14 +13,28 @@ export const PureSwipeable: React.FC<SwipeableProps> = (
 	const rightActionsSize = useRef<LayoutRectangle | null>();
 	const leftActionsSize = useRef<LayoutRectangle | null>();
 	const isRightSwipeValue = useRef<boolean>(false);
+	const isListScrollable = useRef<boolean>(true);
 	const [isRightSwipe, setIsRightSwipe] = useState<boolean | null>(null);
+
+	useEffect(() => {
+		if (props.isListScrollable !== undefined) {
+			isListScrollable.current = props.isListScrollable;
+		}
+	}, [props.isListScrollable]);
 
 	const panResponder = useRef(
 		PanResponder.create({
 			onPanResponderMove: (event, gestureState) => {
 				if (gestureState.dx === 0) {
 					props.onSwipeEnd && props.onSwipeEnd();
+
 					return;
+				}
+
+				if (props.isListScrollable !== undefined) {
+					if (isListScrollable.current === true) {
+						return;
+					}
 				}
 
 				isRightSwipeValue.current =
@@ -51,7 +65,7 @@ export const PureSwipeable: React.FC<SwipeableProps> = (
 					animatedValue.setValue(0);
 				}
 			},
-			onPanResponderEnd: () => {
+			onPanResponderRelease: () => {
 				const value = (animatedValue as any)._value;
 
 				if (value === 0) {
@@ -125,6 +139,7 @@ export const PureSwipeable: React.FC<SwipeableProps> = (
 					}).start();
 				}
 			},
+			onPanResponderTerminationRequest: () => false,
 		})
 	).current;
 

@@ -15,4 +15,5 @@ export type SwipeableProps = PropsWithChildren<{
 	onLeftActionMaximize?: () => void;
 	onSwipeStart?: () => void;
 	onSwipeEnd?: () => void;
+	isListScrollable?: boolean;
 }>;
