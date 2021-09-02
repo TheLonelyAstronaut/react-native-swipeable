@@ -1,6 +1,6 @@
 {
   "name": "react-native-swipeable-reanimated",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Recreated Swipeable component built on top of React Native Gesture Handler & Reanimated",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
