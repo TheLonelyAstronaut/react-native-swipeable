@@ -2,8 +2,7 @@ import React, { useRef, useState } from 'react';
 import type { SwipeableProps } from './types';
 // @ts-ignore
 import Swipeable from 'react-native-swipeable';
-import { Animated, LogBox, View } from 'react-native';
-import ValueXY = Animated.ValueXY;
+import { Animated, LogBox, StyleSheet, View } from 'react-native';
 
 LogBox.ignoreLogs([
 	'Animated:',
@@ -15,10 +14,9 @@ export const PureSwipeable: React.FC<SwipeableProps> = (
 	props: SwipeableProps
 ) => {
 	const panValue = useRef(new Animated.ValueXY({ x: 0, y: 0 }));
+	const wasButtonReleased = useRef(false);
 	const [rightActionSize, setRightActionSize] = useState(0);
 	const [rememberState, setRememberState] = useState(false);
-
-	console.log(rememberState, props.isSwipeAvailable);
 
 	return (
 		<Swipeable
@@ -39,21 +37,17 @@ export const PureSwipeable: React.FC<SwipeableProps> = (
 			}
 			rightActionActivationDistance={100}
 			rightButtonWidth={rightActionSize}
-			rightButtonContainerStyle={{
-				flex: 1,
-				...props.rightBackgroundStyle,
-				justifyContent: 'flex-end',
-				flexDirection: 'row-reverse',
-				alignItems: 'center',
-			}}
+			rightButtonContainerStyle={
+				props.rightContent && {
+					...styles.rightContainer,
+					...props.rightBackgroundStyle,
+				}
+			}
 			leftButtons={props.leftContent && [props.leftContent]}
 			leftButtonContainerStyle={
 				props.leftContent && {
-					flex: 1,
+					...styles.leftContainer,
 					...props.leftBackgroundStyle,
-					justifyContent: 'flex-start',
-					flexDirection: 'row',
-					alignItems: 'center',
 				}
 			}
 			onSwipeStart={() => {
@@ -65,17 +59,44 @@ export const PureSwipeable: React.FC<SwipeableProps> = (
 
 				props.onSwipeStart && props.onSwipeStart();
 			}}
-			onRightButtonsCloseRelease={() => {
-				setRememberState(false);
-
-				props.onSwipeEnd && props.onSwipeEnd();
+			onRightButtonsOpenRelease={() => {
+				wasButtonReleased.current = true;
 			}}
-			onPanAnimatedValueRef={(ref: ValueXY) => (panValue.current = ref)}
+			onRightButtonsCloseRelease={() => {
+				wasButtonReleased.current = false;
+			}}
+			onSwipeComplete={() => {
+				const isSwipeEnabled = props.isSwipeAvailable || rememberState;
+
+				if (!wasButtonReleased.current && isSwipeEnabled) {
+					setRememberState(false);
+
+					props.onSwipeEnd && props.onSwipeEnd();
+				}
+			}}
+			onPanAnimatedValueRef={(ref: Animated.ValueXY) =>
+				(panValue.current = ref)
+			}
 		>
 			{props.children}
 		</Swipeable>
 	);
 };
+
+const styles = StyleSheet.create({
+	leftContainer: {
+		flex: 1,
+		justifyContent: 'flex-start',
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+	rightContainer: {
+		flex: 1,
+		justifyContent: 'flex-end',
+		flexDirection: 'row-reverse',
+		alignItems: 'center',
+	},
+});
 
 /*
 leftContent={
