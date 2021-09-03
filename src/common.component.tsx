@@ -81,7 +81,7 @@ export const CommonSwipeable: React.FC<CommonSwipeableProps> = ({
 						</View>
 				  )}
 			<AnimatedView
-				style={animatedStyle}
+				style={animatedStyle as Animated.AnimateStyle<ViewStyle>}
 				onLayout={(event) => setWrapperSize(event.nativeEvent.layout)}
 			>
 				{children}

@@ -16,4 +16,5 @@ export type SwipeableProps = PropsWithChildren<{
 	onSwipeStart?: () => void;
 	onSwipeEnd?: () => void;
 	isListScrollable?: boolean;
+	isSwipeAvailable?: boolean;
 }>;

@@ -7,6 +7,7 @@ import {
 	SafeAreaView,
 	FlatList,
 	Button,
+	Alert,
 } from 'react-native';
 // @ts-ignore
 import { PureSwipeable } from 'react-native-swipeable-reanimated';
@@ -20,29 +21,39 @@ const RightContent = () => (
 );
 
 export default function App() {
-	const [scrollEnabled] = useState(true);
+	const [scrollEnabled, setScrollEnabled] = useState(true);
+	const [swipeAvailable, setSwipeAvailable] = useState(true);
 
 	const renderItem = useCallback(
 		() => (
 			<PureSwipeable
 				leftBackgroundStyle={{ backgroundColor: rightBackgroundColor }}
 				rightBackgroundStyle={{ backgroundColor: leftBackgroundColor }}
-				rightContent={() => <RightContent />}
-				leftContent={() => <RightContent />}
+				rightContent={<RightContent />}
 				onRightActionMaximize={() => console.log('Right maximize')}
 				onLeftActionMaximize={() => console.log('Left maximize')}
-				//onSwipeStart={() => setScrollEnabled(false)}
-				//onSwipeEnd={() => setScrollEnabled(true)}
-				//isListScrollable={scrollEnabled}
+				onSwipeStart={() => {
+					setScrollEnabled(false);
+					setSwipeAvailable(false);
+				}}
+				onSwipeEnd={() => {
+					setScrollEnabled(true);
+					setSwipeAvailable(true);
+				}}
+				isSwipeAvailable={swipeAvailable}
 			>
 				<View style={styles.box}>
 					<View style={styles.spacer} />
 					<Text>For the power of Swipe!</Text>
 					<View style={styles.spacer} />
+					<Button
+						title={'Meh test'}
+						onPress={() => Alert.alert('Bruh')}
+					/>
 				</View>
 			</PureSwipeable>
 		),
-		[]
+		[swipeAvailable]
 	);
 
 	return (
