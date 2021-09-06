@@ -15,7 +15,7 @@ import { RNGHSwipeable, RNGHSwipeableProps } from '../rngh-swipeable.component';
 const AnimatedFlatlist = Animated.createAnimatedComponent(FlatList);
 
 export type SwipeableFlatlistProps<T> = FlatListProps<T> &
-	RNGHSwipeableProps & {
+	Omit<RNGHSwipeableProps, 'onRightActionPress'> & {
 		onRightActionPress?: (id: string) => void;
 	};
 
