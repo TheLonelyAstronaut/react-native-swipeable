@@ -7,6 +7,7 @@ import {
 	ListRenderItem,
 	NativeSyntheticEvent,
 	NativeScrollEvent,
+	StyleSheet,
 } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { RNGHSwipeable, RNGHSwipeableProps } from '../rngh-swipeable.component';
@@ -17,7 +18,7 @@ export type SwipeableFlatlistProps<T> = FlatListProps<T> & RNGHSwipeableProps;
 
 export class SwipeableFlatlist<T = any> extends React.Component<
 	SwipeableFlatlistProps<T>,
-	null
+	{}
 > {
 	private swipeableRefs: Map<string, RNGHSwipeable | null> = new Map();
 
@@ -53,7 +54,7 @@ export class SwipeableFlatlist<T = any> extends React.Component<
 
 	render(): React.ReactNode {
 		return (
-			<GestureHandlerRootView>
+			<GestureHandlerRootView style={styles.container}>
 				<AnimatedFlatlist
 					{...this.props}
 					renderItem={
@@ -65,3 +66,9 @@ export class SwipeableFlatlist<T = any> extends React.Component<
 		);
 	}
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+	},
+});
