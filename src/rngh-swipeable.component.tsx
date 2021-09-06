@@ -4,13 +4,9 @@ import {
 	StyleSheet,
 	I18nManager,
 	View,
-	Text,
-	Alert,
 	Dimensions,
 	ViewStyle,
 } from 'react-native';
-
-import { RectButton } from 'react-native-gesture-handler';
 
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
@@ -58,11 +54,6 @@ export class RNGHSwipeable extends Component<RNGHSwipeableProps, {}> {
 			extrapolate: 'extend',
 		});
 
-		const pressHandler = () => {
-			this.close();
-			Alert.alert('Delete');
-		};
-
 		return (
 			<View
 				style={{
@@ -78,12 +69,9 @@ export class RNGHSwipeable extends Component<RNGHSwipeableProps, {}> {
 						transform: [{ translateX: trans }],
 					}}
 				>
-					<RectButton
-						style={[styles.rightAction]}
-						onPress={pressHandler}
-					>
-						<Text style={styles.actionText}>{'Delete'}</Text>
-					</RectButton>
+					<View style={[styles.rightAction]}>
+						{this.props.rightContent && this.props.rightContent()}
+					</View>
 				</Animated.View>
 			</View>
 		);
