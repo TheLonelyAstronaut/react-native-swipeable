@@ -14,7 +14,10 @@ import { RNGHSwipeable, RNGHSwipeableProps } from '../rngh-swipeable.component';
 
 const AnimatedFlatlist = Animated.createAnimatedComponent(FlatList);
 
-export type SwipeableFlatlistProps<T> = FlatListProps<T> & RNGHSwipeableProps;
+export type SwipeableFlatlistProps<T> = FlatListProps<T> &
+	RNGHSwipeableProps & {
+		onRightActionPress?: (id: string) => void;
+	};
 
 export class SwipeableFlatlist<T = any> extends React.Component<
 	SwipeableFlatlistProps<T>,
@@ -30,6 +33,10 @@ export class SwipeableFlatlist<T = any> extends React.Component<
 		return (
 			<RNGHSwipeable
 				{...this.props}
+				onRightActionPress={() =>
+					this.props.onRightActionPress &&
+					this.props.onRightActionPress(uniqueKey)
+				}
 				ref={(ref) => this.swipeableRefs.set(uniqueKey, ref)}
 				onGestureStart={() => this.closeSwipeables(uniqueKey)}
 			>

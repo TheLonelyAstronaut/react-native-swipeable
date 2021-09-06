@@ -8,6 +8,8 @@ import {
 	ViewStyle,
 } from 'react-native';
 
+import { RectButton } from 'react-native-gesture-handler';
+
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 export type RNGHSwipeableProps = PropsWithChildren<{
@@ -15,6 +17,7 @@ export type RNGHSwipeableProps = PropsWithChildren<{
 	actionsWidth?: number;
 	rightContent?: () => React.ReactNode;
 	rightBackgroundStyle?: ViewStyle;
+	onRightActionPress?: () => void;
 }>;
 
 export class RNGHSwipeable extends Component<RNGHSwipeableProps, {}> {
@@ -69,9 +72,12 @@ export class RNGHSwipeable extends Component<RNGHSwipeableProps, {}> {
 						transform: [{ translateX: trans }],
 					}}
 				>
-					<View style={[styles.rightAction]}>
+					<RectButton
+						style={[styles.rightAction]}
+						onPress={this.props.onRightActionPress}
+					>
 						{this.props.rightContent && this.props.rightContent()}
-					</View>
+					</RectButton>
 				</Animated.View>
 			</View>
 		);

@@ -30,11 +30,7 @@ export default function App() {
 		[]
 	);
 
-	const RightContent = () => (
-		<View>
-			<Button title={'Delete'} onPress={() => console.log('Delete')} />
-		</View>
-	);
+	const RightContent = () => <Text>Delete</Text>;
 
 	return (
 		<SafeAreaView>
@@ -45,6 +41,7 @@ export default function App() {
 				renderItem={renderItem}
 				actionsWidth={80}
 				keyExtractor={(data: number) => data.toFixed(36)}
+				onRightActionPress={(id: string) => console.log(id)}
 			/>
 		</SafeAreaView>
 	);
