@@ -18,6 +18,8 @@ export type RNGHSwipeableProps = PropsWithChildren<{
 	rightContent?: () => React.ReactNode;
 	rightBackgroundStyle?: ViewStyle;
 	onRightActionPress?: () => void;
+	autoOpenThreshold?: number;
+	onAutoOpen?: () => void;
 }>;
 
 export class RNGHSwipeable extends Component<RNGHSwipeableProps, {}> {
@@ -104,6 +106,8 @@ export class RNGHSwipeable extends Component<RNGHSwipeableProps, {}> {
 				rightThreshold={40}
 				containerStyle={this.props.rightBackgroundStyle}
 				renderRightActions={this.renderRightActions}
+				autoOpenThreshold={this.props.autoOpenThreshold}
+				onAutoOpen={this.props.onAutoOpen}
 			>
 				{children}
 			</Swipeable>
