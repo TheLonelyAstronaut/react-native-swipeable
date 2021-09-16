@@ -20,6 +20,7 @@ export type RNGHSwipeableProps = PropsWithChildren<{
 	onRightActionPress?: () => void;
 	autoOpenThreshold?: number;
 	onAutoOpen?: () => void;
+	disabled?: boolean;
 }>;
 
 export class RNGHSwipeable extends Component<RNGHSwipeableProps, {}> {
@@ -102,7 +103,9 @@ export class RNGHSwipeable extends Component<RNGHSwipeableProps, {}> {
 			<Swipeable
 				ref={this.updateRef}
 				friction={1}
-				enableTrackpadTwoFingerGesture
+				// For patched RNGH version
+				// @ts-ignore
+				disabled={this.props.disabled}
 				rightThreshold={40}
 				containerStyle={this.props.rightBackgroundStyle}
 				renderRightActions={this.renderRightActions}
