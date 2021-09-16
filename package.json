@@ -66,16 +66,17 @@
     "react-native": "0.63.4",
     "react-native-builder-bob": "^0.18.0",
     "react-native-reanimated": "^2.2.0",
+    "react-native-gesture-handler": "https://github.com/TheLonelyAstronaut/react-native-gesture-handler",
     "release-it": "^14.2.2",
     "typescript": "^4.1.3"
   },
   "dependencies": {
-    "react-native-gesture-handler": "https://github.com/TheLonelyAstronaut/react-native-gesture-handler",
     "react-native-swipeable": "^0.6.0"
   },
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
+    "react-native-gesture-handler": "*",
     "react-native-reanimated": "*"
   },
   "jest": {
